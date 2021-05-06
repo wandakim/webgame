@@ -1,20 +1,28 @@
 /*jshint esversion: 6 */
 'use strict';
+
+const CARROT_SIZE = 80;
+const CARROT_COUNT = 5;
+const BUG_COUNT = 5;
+
 const field = document.querySelector(".game__field");
 const fieldRact = field.getBoundingClientRect();
-const carrotWidth = 80;
+const gameTimer = document.querySelector('.game__timer');
+const gameScore = document.querySelector('.game__score');
+const gameBtn = document.querySelector('.game__button');
+
 function initGame() {
     //벌레와 당근을 생성하여 field에 추가해준다. 
-    addItem('carrot', 7, 'img/carrot.png');
-    addItem('bug', 7, 'img/bug.png');
+    addItem('carrot', CARROT_COUNT, 'img/carrot.png');
+    addItem('bug', BUG_COUNT, 'img/bug.png');
 }
 
 
 function addItem(className, count, imgPath) {
 const x1 = 0;
 const y1 = 0;
-const x2 = fieldRact.width - carrotWidth;
-const y2 = fieldRact.height - carrotWidth;
+const x2 = fieldRact.width - CARROT_SIZE;
+const y2 = fieldRact.height - CARROT_SIZE;
 
 for(let i = 0; i < count; i++){
 const item = document.createElement('img');
@@ -33,12 +41,9 @@ function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-
-const startBtn = document.querySelector('.game__button');
-startBtn.addEventListener('click', (e) => {
-    const timer = document.querySelector('.game__timer');
-    const score = document.querySelector('.game__score');
-    timer.style.display = 'block';
-    score.style.display = 'block';
+gameBtn.addEventListener('click', (e) => {
+   
+    gameTimer.style.visibility = 'visible';
+    gameScore.style.visibility = 'visible';
     initGame();
-})
+});

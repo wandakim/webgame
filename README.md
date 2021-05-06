@@ -8,7 +8,7 @@
 
 ### 프로젝트를 진행하면서 배운 것들 💡
 
-#### 1.
+#### -
 
 - asdf
 
@@ -18,12 +18,10 @@
 
 #### 추가 이슈
 
-- 확
+- asdf
 
 ```js
 const parser = new DOMParser();
-const title = parser.parseFromString(snippet.title, "text/html");
-<p className={styles.title}>{title.body.innerHTML}</p>;
 ```
 
 | 해결
