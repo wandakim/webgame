@@ -44,7 +44,9 @@ function showStopBtn() {
 }
 
 function initGame() {
-    //벌레와 당근을 생성하여 field에 추가해준다. 
+    //벌레와 당근을 생성하여 field에 추가해준다.
+    gameScore.innerText = CARROT_COUNT;
+    field.innerHTML=''; 
     addItem('carrot', CARROT_COUNT, 'img/carrot.png');
     addItem('bug', BUG_COUNT, 'img/bug.png');
 }
