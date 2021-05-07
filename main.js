@@ -11,12 +11,15 @@ const fieldRact = field.getBoundingClientRect();
 const gameTimer = document.querySelector('.game__timer');
 const gameScore = document.querySelector('.game__score');
 const gameBtn = document.querySelector('.game__button');
+const gamePopUp = document.querySelector('.pop-up');
+const gamePopUpText = document.querySelector('.pop-up__message');
+const gamePopUpRefresh = document.querySelector('.pop-up__refresh');
 
 let started = false;
 let score = 0;
 let timer = undefined; // *게임이 시작되지 않으면 없다가 시작되면 타이머를 시작하도록. 
-
 gameBtn.addEventListener('click', () => {
+    gameBtn.style.visibility = 'visible';
     if(started){
         stopGame();
     } else {
@@ -27,7 +30,9 @@ gameBtn.addEventListener('click', () => {
 })
 
 function stopGame(){
-  
+    stopGameTimer();
+    hideGameButton();
+    showPopUpWithText('🤷🏻‍♂️Play Again?🤷🏻‍♂️');
 }
 function startGame(){
     initGame();
@@ -39,19 +44,30 @@ function startGame(){
 function startGameTimer() {
     let remainingTimeSec = GAME_DURATION_SEC;
     updateTimerText(remainingTimeSec);
-    timer = setInterval(() => {
+    timer = setInterval(() => { 
         if(remainingTimeSec<=0){
-            clearIntervel();
+            clearIntervel(timer);
             return;
         }
         updateTimerText(--remainingTimeSec);
     },1000);
 }
 
+function stopGameTimer() {
+    clearInterval(timer);
+}
 function updateTimerText(time) {
     const minutes = Math.floor(time/60);
     const seconds = time % 60;
     gameTimer.innerText = `${minutes}:${seconds}`;
+}
+function hideGameButton() {
+    gameBtn.style.visibility = 'hidden'
+}
+
+function showPopUpWithText(text) {
+    gamePopUp.classList.remove('pop-up--hide');
+    gamePopUpText.innerText= `${text}`;
 }
 
 function showTimerAndScore() {
