@@ -2,9 +2,9 @@
 'use strict';
 
 const CARROT_SIZE = 80;
-const CARROT_COUNT = 10;
-const BUG_COUNT = 50;
-const GAME_DURATION_SEC = 70;
+const CARROT_COUNT = 5;
+const BUG_COUNT = 5;
+const GAME_DURATION_SEC = 5;
 
 const field = document.querySelector(".game__field");
 const fieldRact = field.getBoundingClientRect();
@@ -17,12 +17,13 @@ const gamePopUpRefresh = document.querySelector('.pop-up__refresh');
 var bgAudio = new Audio('sound/bg.mp3');
 var bugAudio = new Audio('sound/bug_pull.mp3');
 var carrotAudio = new Audio('sound/carrot_pull.mp3');
-var alertAudio = new Audio('sound/alert.mp3');
+var alertAudio = new Audio('sound/alert.wav');
 var winAudio = new Audio('sound/game_win.mp3');
 
 let started = false;
 let score = 0;
 let timer = undefined; // *게임이 시작되지 않으면 없다가 시작되면 타이머를 시작하도록. (setInterval과 clearinterval의 ID가 return;)
+
 gameBtn.addEventListener('click', () => {
     gameBtn.style.visibility = 'visible';
     if(started){
@@ -37,47 +38,74 @@ gameBtn.addEventListener('click', () => {
 field.addEventListener('click', onFieldClick)
 
 function onFieldClick(e) {
-    if(e.target.className == 'bug') {
-        bugAudio.play();
-        clearInterval(timer);
-        showPopUpWithText('WTF🤯');
-    } else {
-    field.removeChild(e.target);
-    carrotAudio();
-    const leftcarrot = field.querySelectorAll('.carrot').length;
-    gameScore.innerText = leftcarrot;
-    if(leftcarrot===0){
-        clearInterval(timer);
-        winAudio.play();
-        showPopUpWithText('Congratulations!🥳');
-    }}
+    if(!started){
+        return;
+    }
+    const target = e.target;
+    if (target.matches('.carrot')) {
+        target.remove();
+        score++;
+        updateScoreBoard();
+        if(score === CARROT_COUNT){
+            finishGame(true);
+        }
+    } else if (target.matches('.bug')) {
+        stopGameTimer();
+        finishGame(false);
+    }
 }
+function finishGame(win) {
+    started = false;    
+    hideGameButton();
+    showPopUpWithText(win ? '👍🏻': '💩' );
 
-gamePopUpRefresh.addEventListener('click', () => {
-    const icon = gameBtn.querySelector('.fa-stop');
-    icon.classList.add('fa-play');
-    icon.classList.remove('fa-stop');
-    showGameButton();
-    hideGamePopUp();
-    startGame();
-})
-
-function hideGamePopUp() {
-    gamePopUp.classList.add('pop-up--hide');
 }
-
-function showGameButton() {
-    gameBtn.style.visibility = 'visible'
+function updateScoreBoard() {
+    gameScore.innerText = CARROT_COUNT - score;
 }
+    // if(e.target.className == 'bug') {
+    //     bgAudio.pause();
+    //     bugAudio.play();
+    //     clearInterval(timer);
+    //     showPopUpWithText('WTF🤯');
+    // } else {
+    //     const leftcarrot = field.querySelectorAll('.carrot').length;
+    //     field.removeChild(e.target);
+    //     carrotAudio.play();
+    //     gameScore.innerText = leftcarrot;
+    //     if(leftcarrot===0){
+    //         clearInterval(timer);
+    //         winAudio.play();
+    //         showPopUpWithText('Congratulations!🥳');
+    // }}
+// }
+
+// gamePopUpRefresh.addEventListener('click', () => {
+//     const icon = gameBtn.querySelector('.fa-stop');
+//     icon.classList.add('fa-play');
+//     icon.classList.remove('fa-stop');
+//     showGameButton();
+//     hideGamePopUp();
+//     startGame();
+// })
+
+// function hideGamePopUp() {
+//     gamePopUp.classList.add('pop-up--hide');
+// }
+
+// function showGameButton() {
+//     gameBtn.style.visibility = 'visible'
+// }
 function stopGame(){
-        bgAudio.pause();
-        alertAudio.play();
+        // bgAudio.pause();
+        // alertAudio.play();
         stopGameTimer();
         hideGameButton();
         showPopUpWithText('🤷🏻‍♂Play Again?🤷🏻‍♂️');
 }
 function startGame(){
-    bgAudio.play();
+    // bgAudio.load();
+    // bgAudio.play(); 
     initGame();
     showStopBtn();
     showTimerAndScore();
@@ -90,6 +118,7 @@ function startGameTimer() {
     timer = setInterval(() => { 
         if(remainingTimeSec<=0){
             clearInterval(timer);
+            bgAudio.pause();
             showPopUpWithText('🤷🏻‍♂️Play Again?🤷🏻‍♂️');
             return;
         }
